@@ -14,6 +14,9 @@ SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPE)
 client = gspread.authorize(creds)
 
+# Telegram Bot Token
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
 # Глобальні змінні
 is_parsing = False
 sheet = None

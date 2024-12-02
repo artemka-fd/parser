@@ -3,4 +3,4 @@ beautifulsoup4
 gspread
 google-auth
 python-telegram-bot==20.3
-os
+os==3.13.0

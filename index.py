@@ -9,7 +9,7 @@ import re
 import threading
 import os
 
-# Налаштування Google Sheets API
+# Налаштування Google Sheets API 
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPE)
 client = gspread.authorize(creds)

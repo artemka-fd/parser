@@ -10,10 +10,13 @@ from urllib.parse import urlparse
 import re
 import threading
 import os
+import json
 
+creds_json = os.getenv("GOOGLE_CREDENTIALS")
+creds_dict = json.loads(creds_json)
 # Налаштування Google Sheets API 
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPE)
+creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
 client = gspread.authorize(creds)
 
 # Telegram Bot Token
@@ -199,7 +202,7 @@ def main():
     application.add_handler(CommandHandler("help", help))
 
     threading.Thread(target=start_web_server).start()
-    
+
     # Запуск бота
     application.run_polling()
 

@@ -14,6 +14,7 @@ import json
 
 creds_json = os.getenv("GOOGLE_CREDENTIALS")
 creds_dict = json.loads(creds_json)
+print(creds_json, creds_dict)
 # Налаштування Google Sheets API 
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)

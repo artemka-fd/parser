@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import gspread
 from google.oauth2.service_account import Credentials
 from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes, ApplicationHandlerStop
 from urllib.parse import urlparse
 import re
 import threading
@@ -158,8 +158,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Обробник для команди /parse
 async def parse(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    job_queue = context.application.job_queue
-    job_queue.run_once(start_parsing, 0, chat_id=update.message.chat_id)
+    job_queue = context.job_queue
+    if job_queue:
+        job_queue.run_once(start_parsing, 0, chat_id=update.message.chat_id)
+    else:
+        await update.message.reply_text("Job queue is not available.")
 
 # Обробник для команди /status
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -179,6 +182,10 @@ async def stop_parsing(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Бот має такі команди: \n/help - отримати це повідомлення \n/listdocs - подивитись список доступних таблиць \n/setdoc `назва документу` (без лапок) - встановити активний документ, куди вводяться дані \n/getdoc - отримати обраний документ \n/parse - почати парсинг і записування даних у таблицю \n/status - отримати поточний статус парсері \n/stop - зупинити парсинг")
 
+async def error_handler(update, context):
+    # Логування помилки
+    print(f"Update {update} caused error {context.error}")
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -192,6 +199,7 @@ def start_web_server():
 # Головна функція для запуску бота
 def main():
     application = Application.builder().token(TELEGRAM_TOKEN).build()
+    job_queue = application.job_queue
 
     # Налаштування команд
     application.add_handler(CommandHandler("start", start))
@@ -207,6 +215,7 @@ def main():
 
     # Запуск бота
     application.run_polling()
+    application.add_error_handler(error_handler)
 
 if __name__ == "__main__":
     main()

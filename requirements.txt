@@ -3,3 +3,4 @@ beautifulsoup4
 gspread
 google-auth
 python-telegram-bot==20.3
+Flask==2.2.3

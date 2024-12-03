@@ -1,1 +1,1 @@
-worker: bash start.sh
+web: python index.py

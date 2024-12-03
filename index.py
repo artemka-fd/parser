@@ -1,3 +1,5 @@
+from flask import Flask
+import threading
 import requests
 from bs4 import BeautifulSoup
 import gspread
@@ -172,6 +174,16 @@ async def stop_parsing(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Бот має такі команди: \n/help - отримати це повідомлення \n/listdocs - подивитись список доступних таблиць \n/setdoc `назва документу` (без лапок) - встановити активний документ, куди вводяться дані \n/getdoc - отримати обраний документ \n/parse - почати парсинг і записування даних у таблицю \n/status - отримати поточний статус парсері \n/stop - зупинити парсинг")
 
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Telegram Bot is running!", 200
+
+def start_web_server():
+    app.run(host="0.0.0.0", port=5000)
+
+
 # Головна функція для запуску бота
 def main():
     application = Application.builder().token(TELEGRAM_TOKEN).build()
@@ -186,6 +198,8 @@ def main():
     application.add_handler(CommandHandler("stop", stop_parsing))
     application.add_handler(CommandHandler("help", help))
 
+    threading.Thread(target=start_web_server).start()
+    
     # Запуск бота
     application.run_polling()
 

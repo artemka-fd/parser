@@ -5,3 +5,4 @@ google-auth
 python-telegram-bot==20.3
 Flask==2.2.3
 Werkzeug==2.2.3
+python-telegram-bot[job-queue]==20.3
